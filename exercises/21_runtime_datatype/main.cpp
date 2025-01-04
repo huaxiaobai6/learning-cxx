@@ -6,25 +6,33 @@ enum class DataType {
     Double,
 };
 
-/// @brief Tagged union 即标签化联合体，是联合体的一种常见应用。
-///        Rust enum 在实现上就是标签化联合体。
 struct TaggedUnion {
     DataType type;
-    // NOTICE: struct/union 可以相互任意嵌套。
     union {
         float f;
         double d;
     };
 };
 
-// TODO: 将这个函数模板化用于 sigmoid_dyn
+// Sigmoid 函数分别针对 float 和 double
 float sigmoid(float x) {
-    return 1 / (1 + std::exp(-x));
+    return 1.0f / (1.0f + std::exp(-x));
+}
+
+double sigmoid(double x) {
+    return 1.0 / (1.0 + std::exp(-x));
 }
 
 TaggedUnion sigmoid_dyn(TaggedUnion x) {
     TaggedUnion ans{x.type};
-    // TODO: 根据 type 调用 sigmoid
+
+    // 根据 type 调用相应的 sigmoid 函数
+    if (x.type == DataType::Float) {
+        ans.f = sigmoid(x.f);
+    } else if (x.type == DataType::Double) {
+        ans.d = sigmoid(x.d);
+    }
+
     return ans;
 }
 

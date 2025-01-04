@@ -24,21 +24,16 @@ enum class Color : int {
 };
 
 ColorEnum convert_by_pun(Color c) {
-    // READ: <https://zh.cppreference.com/w/cpp/language/union>
-    // `union` 表示在同一内存位置存储的不同类型的值。
-    // 其常见用法是实现类型双关转换，即将一种类型的值转换为另一种无关类型的值。
-    // 但这种写法实际上仅在 C 语言良定义，在 C++ 中是未定义行为。
-    // 这是比较少见的 C++ 不与 C 保持兼容的特性。
-    // READ: 类型双关 <https://tttapa.github.io/Pages/Programming/Cpp/Practices/type-punning.html>
+    // 使用 union 进行类型双关（不推荐，可能导致未定义行为）
     union TypePun {
         ColorEnum e;
-        Color c;
+        int i;  // 使用 int 因为 Color 的底层类型是 int
     };
 
     TypePun pun;
-    // TODO: 补全类型双关转换
+    pun.i = static_cast<int>(c);  // 将 Color 转换为 int，然后存储在 union 中
 
-    return pun.e;
+    return pun.e;  // 从 union 中读取为 ColorEnum
 }
 
 int main(int argc, char **argv) {
